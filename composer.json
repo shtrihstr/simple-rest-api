@@ -1,8 +1,11 @@
 {
-    "name": "strshtrih/simple-rest-api",
+    "name": "shtrihstr/simple-rest-api",
     "description": "Simple WordPress REST API Router",
     "keywords": ["wordpress", "rest", "api"],
-    "require": {},
+    "license": "MIT",
+    "require": {
+        "php": ">=5.5.0"
+    },
     "autoload": {
         "psr-4": {"Simple_REST_API\\": "src/"}
     }
