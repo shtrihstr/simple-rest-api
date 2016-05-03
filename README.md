@@ -24,7 +24,7 @@ $router->get( '/posts', function() {
 } );
 ```
 #### Dynamic Routing
-Now, you can create another controller for viewing individual blog posts:
+Now you can create another controller for viewing individual blog posts:
 ```php
 $router->get( '/post/{id}', function( WP_REST_Response $response, $id ) {
     $post = get_post( $id );
@@ -67,7 +67,7 @@ $router->patch( '/post/{id}', function( $id ) {
 } );
 ```
 #### Route Variables
-As it has been shown before you can define variable parts in a route like this:
+As it has been shown before, you can define variable parts in a route like this:
 ```php
 $router->get( '/post/{id}', function( $id ) {
     // ...
@@ -105,7 +105,7 @@ $router->get( '/comments/{user}', function( $user ) {
 } )->convert( 'user', function( $user ) { return get_user_by( 'id', $user ); } );
 ```
 #### Requirements
-The following will make sure the id argument is a positive integer, since \d+ matches any amount of digits:
+The following will make sure the id argument is a positive integer since \d+ matches any amount of digits:
 ```php
 $router->get( '/post/{id}', function( $id ) {
     // ...

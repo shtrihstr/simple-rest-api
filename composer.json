@@ -3,7 +3,7 @@
     "description": "Simple WordPress REST API Router",
     "keywords": ["wordpress", "rest", "api"],
     "license": "MIT",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "require": {
         "php": "^5.5 || ^7.0"
     },
