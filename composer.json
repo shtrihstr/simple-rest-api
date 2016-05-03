@@ -1,0 +1,9 @@
+{
+    "name": "strshtrih/simple-rest-api",
+    "description": "Simple WordPress REST API Router",
+    "keywords": ["wordpress", "rest", "api"],
+    "require": {},
+    "autoload": {
+        "psr-4": {"Simple_REST_API\\": "src/"}
+    }
+}
