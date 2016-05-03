@@ -14,12 +14,18 @@ class Router {
      */
     protected $_routes = [];
 
+
+    protected $_options = [
+        'etag' => false,
+    ];
+
     /**
      * @param string $namespace The first URL segment after core prefix. Should be unique to your package/plugin.
      */
-    public function __construct( $namespace ) {
+    public function __construct( $namespace, $options = [] ) {
         $namespace = trim( $namespace, '/' );
         $this->_namespace = $namespace;
+        $this->_options = wp_parse_args( $options, $this->_options );
 
         add_action( 'rest_api_init', function() {
             $this->_register();
@@ -121,7 +127,7 @@ class Router {
     }
 
     protected function _maybe_add_etag( WP_REST_Request $request, WP_REST_Response $response ) {
-        if( 'GET' === $request->get_method() && 200 == $response->get_status() ) {
+        if( $this->_options['etag'] && 'GET' === $request->get_method() && 200 == $response->get_status() ) {
             $etag = md5( serialize( $response->get_data() ) );
             $response->header( 'Etag', $etag );
 
