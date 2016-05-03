@@ -14,6 +14,8 @@ class Router {
      */
     protected $_routes = [];
 
+    protected $_before = [];
+    protected $_after = [];
 
     protected $_options = [
         'etag' => false,
@@ -111,8 +113,41 @@ class Router {
         return $route;
     }
 
+    /**
+     * Sets a callback to handle before triggering any route callback.
+     *
+     * @param callable $callback A PHP callback to be triggered when the route is matched, just before the route callback
+     *
+     * @return Router $this The current instance
+     */
+    public function before( callable $callback ) {
+        $this->_before[] = $callback;
+        return $this;
+    }
+
+    /**
+     * Sets a callback to handle after any route callback.
+     *
+     * @param callable $callback A PHP callback to be triggered after the route callback
+     *
+     * @return Router $this The current instance
+     */
+    public function after( callable $callback ) {
+        $this->_after[] = $callback;
+        return $this;
+    }
+
     protected function _register() {
         foreach( $this->_routes as $route ) {
+
+            foreach( $this->_before as $callback ) {
+                $route->before( $callback );
+            }
+
+            foreach( $this->_after as $callback ) {
+                $route->after( $callback );
+            }
+
             $args = [
                 'methods' => $route->get_method(),
                 'accept_json' => $route->is_accept_json(),

@@ -1,5 +1,5 @@
 # Simple WordPress REST API Router
-WordPress REST API Router, that is really easy to use.
+WordPress REST API Router that is really easy to use.
 
 ## Installation
 #### Composer
@@ -102,7 +102,7 @@ This is useful when you want to convert route variables to objects:
 ```php
 $router->get( '/comments/{user}', function( $user ) {
     // ...
-}) ->convert( 'user', function( $user ) { return get_user_by( 'id', $user ); } );
+} )->convert( 'user', function( $user ) { return get_user_by( 'id', $user ); } );
 ```
 #### Requirements
 The following will make sure the id argument is a positive integer, since \d+ matches any amount of digits:
