@@ -157,7 +157,7 @@ class Router {
                     return $response;
                 }
             ];
-            register_rest_route( $this->_namespace, $route->get_path(), $args, true );
+            register_rest_route( $this->_namespace, $route->get_path(), $args );
         }
     }
 
