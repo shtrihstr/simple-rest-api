@@ -5,6 +5,7 @@ namespace Simple_REST_API;
 use WP_REST_Request;
 use WP_REST_Response;
 use ReflectionFunction;
+use WP_Error;
 
 class Route {
 
@@ -117,12 +118,18 @@ class Route {
 
         $result = $this->_execute_callback( $this->_callback, $request, $response );
 
-        if( $result && ! $result instanceof WP_REST_Response ) {
-            $response->set_data( $result );
+        if( $result ) {
+            if ( ! ( $result instanceof WP_REST_Response || $result instanceof WP_Error ) ) {
+                $response->set_data( $result );
+            } else {
+                $response = $result;
+            }
         }
 
-        foreach ( $this->_after as $after_callback ) {
-            $this->_execute_callback( $after_callback, $request, $response );
+        if ( ! ( $response instanceof WP_Error ) ) {
+            foreach ( $this->_after as $after_callback ) {
+                $this->_execute_callback( $after_callback, $request, $response );
+            }
         }
 
         return $response;
