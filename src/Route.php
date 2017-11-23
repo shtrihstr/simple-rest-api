@@ -5,6 +5,7 @@ namespace Simple_REST_API;
 use WP_REST_Request;
 use WP_REST_Response;
 use ReflectionFunction;
+use WP_Error;
 
 class Route {
 
@@ -104,9 +105,8 @@ class Route {
 
         foreach ( $this->_converts as $key => $convert_callback ) {
             if( in_array( $key, array_values( $this->_custom_params ) ) ) {
-                $index = array_search( $key, $this->_custom_params );
                 $url_params = $request->get_url_params();
-                $url_params[ $index ] = $this->_execute_callback( $convert_callback, $request, $response );
+                $url_params[ $key ] = $this->_execute_callback( $convert_callback, $request, $response );
                 $request->set_url_params( $url_params );
             }
         }
@@ -117,12 +117,18 @@ class Route {
 
         $result = $this->_execute_callback( $this->_callback, $request, $response );
 
-        if( $result && ! $result instanceof WP_REST_Response ) {
-            $response->set_data( $result );
+        if( $result ) {
+            if ( ! ( $result instanceof WP_REST_Response || $result instanceof WP_Error ) ) {
+                $response->set_data( $result );
+            } else {
+                $response = $result;
+            }
         }
 
-        foreach ( $this->_after as $after_callback ) {
-            $this->_execute_callback( $after_callback, $request, $response );
+        if ( ! ( $response instanceof WP_Error ) ) {
+            foreach ( $this->_after as $after_callback ) {
+                $this->_execute_callback( $after_callback, $request, $response );
+            }
         }
 
         return $response;
@@ -143,9 +149,8 @@ class Route {
                 $args[ $name ] = $response;
             }
             elseif ( in_array( $name, array_values( $this->_custom_params ) ) ) {
-                $index = array_search( $name, $this->_custom_params );
                 $url_params = $request->get_url_params();
-                $args[ $name ] = $url_params[ $index ];
+                $args[ $name ] = $url_params[ $name ];
             }
         }
 
@@ -167,7 +172,7 @@ class Route {
 
                 $params[ $index ] = $param;
                 $pattern = array_key_exists( $param, $this->_asserts ) ? $this->_asserts[ $param ] : '[^/]+';
-                $path = implode( '(' . $pattern . ')', $path_parts );
+                $path = implode( '(?P<' . $param . '>' . $pattern . ')', $path_parts );
             }
         }
         return $path;

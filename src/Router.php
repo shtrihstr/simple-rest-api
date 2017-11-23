@@ -4,6 +4,7 @@ namespace Simple_REST_API;
 
 use WP_REST_Request;
 use WP_REST_Response;
+use WP_Error;
 
 class Router {
 
@@ -153,7 +154,10 @@ class Router {
                 'accept_json' => $route->is_accept_json(),
                 'callback' => function( WP_REST_Request $request ) use ( $route ) {
                     $response = $route->execute( $request );
-                    $this->_maybe_add_etag( $request, $response );
+
+                    if ( ! ( $response instanceof WP_Error ) ) {
+                        $this->_maybe_add_etag( $request, $response );
+                    }
                     return $response;
                 }
             ];
