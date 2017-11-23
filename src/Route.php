@@ -105,9 +105,8 @@ class Route {
 
         foreach ( $this->_converts as $key => $convert_callback ) {
             if( in_array( $key, array_values( $this->_custom_params ) ) ) {
-                $index = array_search( $key, $this->_custom_params );
                 $url_params = $request->get_url_params();
-                $url_params[ $index ] = $this->_execute_callback( $convert_callback, $request, $response );
+                $url_params[ $key ] = $this->_execute_callback( $convert_callback, $request, $response );
                 $request->set_url_params( $url_params );
             }
         }
@@ -150,9 +149,8 @@ class Route {
                 $args[ $name ] = $response;
             }
             elseif ( in_array( $name, array_values( $this->_custom_params ) ) ) {
-                $index = array_search( $name, $this->_custom_params );
                 $url_params = $request->get_url_params();
-                $args[ $name ] = $url_params[ $index ];
+                $args[ $name ] = $url_params[ $name ];
             }
         }
 
@@ -174,7 +172,7 @@ class Route {
 
                 $params[ $index ] = $param;
                 $pattern = array_key_exists( $param, $this->_asserts ) ? $this->_asserts[ $param ] : '[^/]+';
-                $path = implode( '(' . $pattern . ')', $path_parts );
+                $path = implode( '(?P<' . $param . '>' . $pattern . ')', $path_parts );
             }
         }
         return $path;
